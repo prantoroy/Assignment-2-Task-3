@@ -1,0 +1,102 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+
+    <title>
+      Visualize crimes in Saint Louis (A2 - Task 3)
+    </title>
+
+    <link
+      rel="stylesheet"
+      href="https://js.arcgis.com/4.25/esri/themes/light/main.css"
+    />
+
+    <style>
+      html,
+      body,
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+
+    <script src="https://js.arcgis.com/4.25/"></script>
+
+    <script>
+      require([
+        "esri/Map",
+        "esri/layers/CSVLayer",
+        "esri/views/MapView",
+        "esri/widgets/Legend"
+      ], (Map, CSVLayer, MapView, Legend) => {
+        const url =
+          "https://raw.githubusercontent.com/orhuna/WebGIS_SLU_M1/main/Module%202/stl_crime_wgs_84.csv";
+
+
+        const template = {
+   title: "Crime committed at {ILEADSStreet}"
+};
+
+        const renderer = {
+          type: "heatmap",
+          colorStops: [
+            { color: "rgba(63, 40, 102, 0)", ratio: 0 },
+{ color: "#00ff00", ratio: 0.083 },
+{ color: "#24ff00", ratio: 0.166 },
+{ color: "#48ff00", ratio: 0.249 },
+{ color: "#6dff00", ratio: 0.332 },
+{ color: "#91ff00", ratio: 0.415 },
+{ color: "#b5ff00", ratio: 0.498 },
+{ color: "#d9ff00", ratio: 0.581 },
+{ color: "#ffff00", ratio: 0.664 },
+{ color: "#ffd900", ratio: 0.747 },
+{ color: "#ffad00", ratio: 0.83 },
+{ color: "#ff8000", ratio: 0.913 },
+{ color: "#ff0000", ratio: 1 }
+          ],
+          maxDensity: 0.1,
+          minDensity: 0
+        };
+
+const layer = new CSVLayer({
+        url: url,
+        title: "St. Louis Crime Heatmap",
+        copyright: "St. Louis Police Department",
+		latitudeField:"Lat",
+        longitudeField:"Lon",
+		popupTemplate: template,
+		renderer: renderer
+});
+
+        const map = new Map({
+          basemap: "gray-vector",
+          layers: [layer]
+        });
+
+        const view = new MapView({
+          container: "viewDiv",
+          center: [-90.199402, 38.627003],
+          zoom: 10,
+          map: map
+        });
+
+        view.ui.add(
+          new Legend({
+            view: view
+          }),
+          "bottom-left"
+        );
+      });
+    </script>
+  </head>
+
+  <body>
+    <div id="viewDiv"></div>
+  </body>
+</html>
